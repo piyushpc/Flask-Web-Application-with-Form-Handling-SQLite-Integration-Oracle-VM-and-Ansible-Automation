@@ -1,0 +1,21 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Start and enable Nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Create a basic HTML file
+  copy:
+    content: "<h1>Welcome to the Web Server of mine </h1>"
+    dest: /var/www/html/index.html
+
+

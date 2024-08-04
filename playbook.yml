@@ -1,0 +1,124 @@
+- name: Deploy a simple HTML application
+  copy:
+    src: /local/path/to/index.html
+    dest: /var/www/simple-app/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Deploy Nginx configuration for simple app
+  template:
+    src: simple-app.nginx.j2
+    dest: /etc/nginx/sites-available/simple-app
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/simple-app
+    dest: /etc/nginx/sites-enabled/simple-app
+    state: link
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+
+- name: Setup Web Server
+  hosts: webservers
+  become: yes
+  roles:
+    - webserver
+
+- name: Setup Database Server
+  hosts: dbservers
+  become: yes
+  roles:
+    - dbserver
+
+- name: Deploy Web Server
+  hosts: webservers
+  become: yes
+#  become_method: sudo
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Ensure Apache is installed
+      apt:
+        name: apache2
+        state: present
+
+    - name: Start Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+- name: Setup Database Server
+  hosts: dbservers
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install MySQL
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Ensure MySQL is running
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+
+
+#########################
+
+
+- name: Deploy a simple HTML application
+  copy:
+    src: /local/path/to/index.html
+    dest: /var/www/simple-app/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Deploy Nginx configuration for simple app
+  template:
+    src: simple-app.nginx.j2
+    dest: /etc/nginx/sites-available/simple-app
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/simple-app
+    dest: /etc/nginx/sites-enabled/simple-app
+    state: link
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Deploy Web Application
+  hosts: webservers
+  tasks:
+    - name: Copy HTML file
+      copy:
+        src: /path/to/local/index.html
+        dest: /var/www/myapp/index.html
+    - name: Copy JavaScript file
+      copy:
+        src: /path/to/local/scripts.js
+        dest: /var/www/myapp/scripts.js
+    - name: Restart web server
+      service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,5 @@
+[webservers]
+localhost ansible_connection=local ansible_become=yes ansible_become_method=sudo ansible_become_password=Pcchaudhary@88
+
+[dbservers]
+localhost ansible_connection=local ansible_become=yes ansible_become_method=sudo ansible_become_password=Pcchaudhary@88

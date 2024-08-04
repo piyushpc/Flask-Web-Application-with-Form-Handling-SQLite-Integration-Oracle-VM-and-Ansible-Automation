@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List and Contacts</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <ul>
+        {% for todo in todos %}
+            <li>{{ todo.task }}</li>
+        {% endfor %}
+    </ul>
+    <form action="/add" method="POST">
+        <input type="text" name="task" placeholder="New Task">
+        <button type="submit">Add Task</button>
+    </form>
+
+    <h2>Contact Form</h2>
+    <form action="/contact" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Contacts</h2>
+    <ul>
+        {% for contact in contacts %}
+            <li>{{ contact.name }} - {{ contact.email }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
